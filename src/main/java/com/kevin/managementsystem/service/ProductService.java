@@ -6,6 +6,8 @@ import com.kevin.managementsystem.dto.ProductResponseDTO;
 import com.kevin.managementsystem.exception.BusinessException;
 import com.kevin.managementsystem.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    @CacheEvict(value = "products", allEntries = true)
     public ProductResponseDTO create(ProductRequestDTO dto) {
         Product product = Product.builder()
                 .name(dto.name())
@@ -29,6 +32,7 @@ public class ProductService {
         return ProductResponseDTO.fromEntity(productRepository.save(product));
     }
 
+    @Cacheable(value = "products", key = "'all'")
     public List<ProductResponseDTO> findAll() {
         return productRepository.findAll()
                 .stream()
@@ -36,12 +40,14 @@ public class ProductService {
                 .toList();
     }
 
+    @Cacheable(value = "products", key = "#id")
     public ProductResponseDTO findById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Produto não encontrado: " + id));
         return ProductResponseDTO.fromEntity(product);
     }
 
+    @CacheEvict(value = "products", allEntries = true)
     public void delete(Long id) {
         if (!productRepository.existsById(id)) {
             throw new BusinessException("Produto não encontrado: " + id);
