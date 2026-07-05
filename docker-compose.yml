@@ -11,6 +11,15 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ecommerce-rabbitmq
+    ports:
+      - "5672:5672"   # porta de comunicação da aplicação com o RabbitMQ
+      - "15672:15672" # painel visual de administração
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
 volumes:
   postgres_data:
+

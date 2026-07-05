@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .requestMatchers("/api/orders/my", "/api/orders").authenticated() // customer e admin podem criar/ver os próprios
                         .requestMatchers(HttpMethod.GET, "/api/orders").hasRole("ADMIN")
+                        .requestMatchers("/api/payments/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
