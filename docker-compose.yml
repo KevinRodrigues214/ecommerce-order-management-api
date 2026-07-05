@@ -1,5 +1,22 @@
-version: '3.8'
 services:
+  app:
+    build: .
+    container_name: ecommerce-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce
+      DB_USERNAME: admin
+      DB_PASSWORD: admin123
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_DATA_REDIS_HOST: redis
+    depends_on:
+      - postgres
+      - rabbitmq
+      - redis
+    networks:
+      - ecommerce-network
+
   postgres:
     image: postgres:16
     container_name: ecommerce-postgres
@@ -11,20 +28,32 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ecommerce-network
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: ecommerce-rabbitmq
     ports:
-      - "5672:5672"   # porta de comunicação da aplicação com o RabbitMQ
-      - "15672:15672" # painel visual de administração
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin123
+    networks:
+      - ecommerce-network
+
   redis:
     image: redis:7-alpine
     container_name: ecommerce-redis
     ports:
       - "6379:6379"
+    networks:
+      - ecommerce-network
+
 volumes:
   postgres_data:
 
+networks:
+  ecommerce-network:
+    driver: bridge
