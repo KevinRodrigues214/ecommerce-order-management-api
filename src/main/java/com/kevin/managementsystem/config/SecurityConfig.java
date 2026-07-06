@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/orders/my", "/api/orders").authenticated() // customer e admin podem criar/ver os próprios
                         .requestMatchers(HttpMethod.GET, "/api/orders").hasRole("ADMIN")
                         .requestMatchers("/api/payments/**").authenticated()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
