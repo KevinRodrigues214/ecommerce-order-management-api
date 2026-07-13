@@ -1,83 +1,83 @@
 # E-commerce Order Management API
 
-API REST de e-commerce com gestão de pedidos, processamento assíncrono de pagamentos e cache distribuído. Desenvolvida como projeto de portfólio para demonstrar arquitetura backend aplicada a um cenário realista de negócio.
+A REST API for e-commerce with order management, asynchronous payment processing, and distributed caching. Built as a portfolio project to demonstrate backend architecture applied to a realistic business scenario.
 
-## 🚀 Funcionalidades
+## 🚀 Features
 
-- **Autenticação e autorização** via JWT com roles (ADMIN / CUSTOMER)
-- **Gestão de catálogo** de produtos com cache Redis
-- **Gestão de pedidos** com validação de estoque e cálculo automático de valores
-- **Processamento assíncrono de pagamentos** via RabbitMQ (fila de eventos)
-- **Testes automatizados** (unitários com Mockito + integração)
-- **Documentação interativa** via Swagger/OpenAPI
-- **Containerização completa** com Docker Compose (app + Postgres + RabbitMQ + Redis)
+- **Authentication and authorization** via JWT with role-based access (ADMIN / CUSTOMER)
+- **Product catalog management** with Redis caching
+- **Order management** with stock validation and automatic price calculation
+- **Asynchronous payment processing** via RabbitMQ (event queue)
+- **Automated tests** (unit tests with Mockito + integration tests)
+- **Interactive documentation** via Swagger/OpenAPI
+- **Full containerization** with Docker Compose (app + Postgres + RabbitMQ + Redis)
 
-## 🛠️ Stack técnica
+## 🛠️ Tech Stack
 
-| Categoria | Tecnologia |
+| Category | Technology |
 |---|---|
-| Linguagem | Java 17 |
+| Language | Java 17 |
 | Framework | Spring Boot 3 |
-| Persistência | Spring Data JPA + PostgreSQL |
-| Segurança | Spring Security + JWT |
-| Mensageria | RabbitMQ |
+| Persistence | Spring Data JPA + PostgreSQL |
+| Security | Spring Security + JWT |
+| Messaging | RabbitMQ |
 | Cache | Redis |
-| Testes | JUnit 5, Mockito, Testcontainers |
-| Documentação | Swagger / OpenAPI |
-| Containerização | Docker, Docker Compose |
+| Testing | JUnit 5, Mockito, Testcontainers |
+| Documentation | Swagger / OpenAPI |
+| Containerization | Docker, Docker Compose |
 
-## 🏗️ Arquitetura
+## 🏗️ Architecture
 
-O fluxo de compra segue este caminho:
+The purchase flow works as follows:
 
-1. Cliente se autentica e recebe um token JWT
-2. Cliente cria um pedido → sistema valida estoque e calcula o total no backend (nunca confia no valor enviado pelo cliente)
-3. Cliente paga o pedido → pagamento é processado e um evento é publicado no RabbitMQ
-4. Um listener assíncrono consome o evento e atualiza o status do pedido, sem bloquear a resposta HTTP ao cliente
-5. Consultas ao catálogo de produtos são cacheadas no Redis para reduzir carga no banco
+1. Customer authenticates and receives a JWT token
+2. Customer creates an order → the backend validates stock and calculates the total (never trusts values sent by the client)
+3. Customer pays for the order → the payment is processed and an event is published to RabbitMQ
+4. An asynchronous listener consumes the event and updates the order status, without blocking the HTTP response to the client
+5. Product catalog queries are cached in Redis to reduce database load
 
-## 📋 Pré-requisitos
+## 📋 Prerequisites
 
-- Docker e Docker Compose instalados
+- Docker and Docker Compose installed
 
-## ▶️ Como rodar
+## ▶️ How to run
 
-Clone o repositório e execute:
+Clone the repository and run:
 
 ```bash
 docker-compose up --build
 ```
 
-A aplicação estará disponível em `http://localhost:8080`.
+The application will be available at `http://localhost:8080`.
 
-Documentação interativa (Swagger): `http://localhost:8080/swagger-ui/index.html`
+Interactive documentation (Swagger): `http://localhost:8080/swagger-ui/index.html`
 
-Painel do RabbitMQ: `http://localhost:15672` (usuário: `admin`, senha: `admin123`)
+RabbitMQ management panel: `http://localhost:15672` (user: `admin`, password: `admin123`)
 
-## 🔑 Autenticação
+## 🔑 Authentication
 
-1. Registre um usuário: `POST /api/auth/register`
-2. Faça login: `POST /api/auth/login` (retorna um token JWT)
-3. Use o token no header: `Authorization: Bearer <token>` nas demais requisições
+1. Register a user: `POST /api/auth/register`
+2. Log in: `POST /api/auth/login` (returns a JWT token)
+3. Use the token in the header: `Authorization: Bearer <token>` for subsequent requests
 
-## 🧪 Rodando os testes
+## 🧪 Running the tests
 
 ```bash
 mvn test
 ```
 
-## 📌 Endpoints principais
+## 📌 Main endpoints
 
-| Método | Endpoint | Descrição | Acesso |
+| Method | Endpoint | Description | Access |
 |---|---|---|---|
-| POST | `/api/auth/register` | Registrar usuário | Público |
-| POST | `/api/auth/login` | Login | Público |
-| GET | `/api/products` | Listar produtos (cacheado) | Autenticado |
-| POST | `/api/orders` | Criar pedido | Autenticado |
-| GET | `/api/orders/my` | Meus pedidos | Autenticado |
-| POST | `/api/payments` | Pagar pedido | Autenticado |
-| GET | `/api/users` | Listar usuários | Admin |
+| POST | `/api/auth/register` | Register user | Public |
+| POST | `/api/auth/login` | Log in | Public |
+| GET | `/api/products` | List products (cached) | Authenticated |
+| POST | `/api/orders` | Create order | Authenticated |
+| GET | `/api/orders/my` | My orders | Authenticated |
+| POST | `/api/payments` | Pay for order | Authenticated |
+| GET | `/api/users` | List users | Admin |
 
-## 👤 Autor
+## 👤 Author
 
 Kevin Rodrigues
